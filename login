@@ -181,3 +181,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
+
+
+
+
+
+
+
+<?php
+session_start();
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+       $username = filter_input(INPUT_POST, 'username');
+    $password = filter_input(INPUT_POST, 'password');
+
+    if (!empty($username) && !empty($password)) 
+{
+        
+        $host = "localhost";
+        $dbusername = "root";
+        $dbpassword = "";
+        $dbname = "travel";
+
+        $conn = new mysqli($host, $dbusername, $dbpassword, $dbname);
+
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        } else {
+            
+            $sql = "SELECT * FROM users1 WHERE username = ?";
+
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("s", $username); // 's' is for string
+            if($stmt->execute())
+            {
+
+           
+                    echo "Logged in successfully!";
+                    header("refresh:3; url=login.html");
+                    exit();
+              }
+             else
+               {
+                  echo "error";
+                       }
+
+            $stmt->close();
+            $conn->close();
+        }
+    } else {
+        echo "Please fill in both fields.";
+    }
+}
+?>
+
